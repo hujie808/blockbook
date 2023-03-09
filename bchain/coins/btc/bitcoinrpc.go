@@ -906,6 +906,7 @@ func (b *BitcoinRPC) Call(req interface{}, res interface{}) error {
 		urlList := strings.Split(b.rpcURL, "||")
 		resUrl = urlList[rand.Intn(len(urlList))]
 	}
+
 	httpReq, err := http.NewRequest("POST", resUrl, bytes.NewBuffer(httpData))
 	if err != nil {
 		return err
