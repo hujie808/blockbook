@@ -8,9 +8,11 @@ import (
 	"io"
 	"io/ioutil"
 	"math/big"
+	"math/rand"
 	"net"
 	"net/http"
 	"runtime/debug"
+	"strings"
 	"time"
 
 	"github.com/golang/glog"
@@ -898,7 +900,13 @@ func (b *BitcoinRPC) Call(req interface{}, res interface{}) error {
 	if err != nil {
 		return err
 	}
-	httpReq, err := http.NewRequest("POST", b.rpcURL, bytes.NewBuffer(httpData))
+	resUrl := b.rpcURL
+	if strings.Contains(b.rpcURL, "||") {
+		rand.Seed(time.Now().UnixNano())
+		urlList := strings.Split(b.rpcURL, "||")
+		resUrl = urlList[rand.Intn(len(urlList))]
+	}
+	httpReq, err := http.NewRequest("POST", resUrl, bytes.NewBuffer(httpData))
 	if err != nil {
 		return err
 	}
